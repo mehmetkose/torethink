@@ -10,17 +10,17 @@
 
 
 import asyncio
-
+import rethinkdb as r
+r.set_loop_type("tornado")
 
 class Torethink(object):
 
     @classmethod
-    async def init(cls, settings):
+    async def init(cls, host="localhost", db="test", port=28015):
         self = Torethink()
-        self.settings = settings
-        # self.connection = await connect("...")
+        self.db = await r.connect(host=host, db=db, port=port)
         return self
 
     async def hello(self):
-        print(self.settings)
+        #await self.db
         return "hello"

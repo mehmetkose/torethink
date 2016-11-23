@@ -8,5 +8,14 @@ setup(
     license='MIT License',
     author='Mehmet Kose',
     author_email='mehmet@linux.com',
-    description='Rethinkdb Mixin For Tornado Framework.'
+    description='Rethinkdb Mixin For Tornado Framework.',
+    keywords='tornado rethinkdb layer',
+    install_requires=[
+        'tornado',
+        'rethinkdb',
+    ],
+    classifiers=[
+        "Programming Language :: Python :: 3.5 :: Only",
+        #"Programming Language :: Python :: 3.6"
+    ],
 )
