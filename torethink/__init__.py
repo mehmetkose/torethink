@@ -46,7 +46,7 @@ class Torethink(object):
         items = await self.iterate_cursor(cursor)
         return items
 
-    async def list(self, table, key='get', value='all', index='update_date', order='desc', create_index=True):
+    async def list(self, table, key='get', value='all', index='update_date', order='desc', create_index=False):
         if create_index:
             await self.index(table, index)
 
