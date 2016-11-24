@@ -17,10 +17,16 @@ r.set_loop_type("tornado")
 class Torethink(object):
 
     @classmethod
-    async def init(cls, host="localhost", db="test", port=28015):
-        self = Torethink()
-        self.db = await r.connect(host=host, db=db, port=port)
-        return self
+    async def init(cls, database={}):
+        host = database.get("host", None)
+        db = database.get("db", None)
+        port = database.get("port", None)
+        if host and db and port:
+            self = Torethink()
+            self.db = await r.connect(host=host, db=db, port=port)
+            return self
+        else:
+            raise ValueError('check your initial values.')
 
     async def iterate_cursor(self, cursor):
         items = []
