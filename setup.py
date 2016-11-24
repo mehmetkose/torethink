@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='torethink',
-    version='0.2',
+    version='0.3.0',
     packages=['torethink'],
     url='https://github.com/mehmetkose/torethink',
     license='MIT License',

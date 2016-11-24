@@ -30,21 +30,17 @@ class Torethink(object):
         return items
 
     async def insert(self, table, insert_dict):
-        results = await r.table(table).insert(insert_dict).run(self.db)
-        return results
+        return (await r.table(table).insert(insert_dict).run(self.db))
 
     async def remove(self, table, record_id):
-        results = await r.table(table).get(id=record_id).delete().run(self.db)
-        return results
+        return (await r.table(table).get(id=record_id).delete().run(self.db))
 
     async def update(self, table, id, data):
-        results = await r.table(table).get(id).update(data).run(self.db)
-        return results
+        return (await r.table(table).get(id).update(data).run(self.db))
 
     async def filter(self, table, criterion):
         cursor = await r.table(table).filter(criterion).run(self.db)
-        items = await self.iterate_cursor(cursor)
-        return items
+        return (await self.iterate_cursor(cursor))
 
     async def list(self, table, key='get', value='all', index='update_date', order='desc', create_index=False):
         if create_index:
@@ -63,6 +59,10 @@ class Torethink(object):
         items = await self.iterate_cursor(cursor)
         return items
 
+    async def all(self, table):
+        cursor = await r.table(table).run(self.db)
+        return (await self.iterate_cursor(cursor))
+
     async def insert_unique(self, table, check_dict, insert_dict):
         cursor = await r.table(table).filter(check_dict).run(self.db)
         items = await self.iterate_cursor(cursor)
@@ -72,8 +72,7 @@ class Torethink(object):
         return False
 
     async def remove_all_with_key(self, table, key, value):
-        results = await r.table(table).filter({key: value}).delete().run(self.db)
-        return results
+        return (await r.table(table).filter({key: value}).delete().run(self.db))
 
     async def remove_one_with_key(self, table, key, value):
         items = await self.list(table, key, value)
@@ -84,24 +83,20 @@ class Torethink(object):
         return False
 
     async def update_all_with_key(self, table, key, value, data):
-        results = await r.table(table).filter({key: value}).update(data).run(self.db)
-        return(results)
+        return (await r.table(table).filter({key: value}).update(data).run(self.db))
 
     async def update_one_with_key(self, table, key, value, data):
         items = await self.list(table, key, value)
         if len(get_list) > 0:
             item_id = items[0]
-            results = await self.update(table, item_id, data)
-            return results
+            return (await self.update(table, item_id, data))
         return False
 
     async def flush(self, table):
-        results = await r.table(table).delete().run(self.db)
-        return results
+        return(await r.table(table).delete().run(self.db))
 
     async def index(self, table, key):
         try:
-            result = await r.table(table).index_create(key).run(self.db)
-            return True
+            return (await r.table(table).index_create(key).run(self.db))
         except r.errors.ReqlOpFailedError as e:
             return False
