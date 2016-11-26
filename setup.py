@@ -1,14 +1,15 @@
+
 from distutils.core import setup
 
 setup(
     name='torethink',
-    version='0.3.0',
+    version='1.0.0',
     packages=['torethink'],
     url='https://github.com/mehmetkose/torethink',
     license='MIT',
     author='Mehmet Kose',
     author_email='mehmet@linux.com',
-    description='Rethinkdb Mixin For Tornado Framework.',
+    description='Rethinkdb Wrapper For Tornado Framework',
     platforms=('Any'),
     keywords='tornado rethinkdb layer'.split(),
     install_requires=[
