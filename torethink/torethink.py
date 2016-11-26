@@ -1,5 +1,5 @@
 
-# Rethinkdb Mixin For Tornado Framework.
+# Rethinkdb Wrapper For Tornado Framework
 # https://github.com/mehmetkose/torethink
 
 # Licensed under the MIT license:
