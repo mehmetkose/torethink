@@ -1,4 +1,11 @@
 
+# Rethinkdb Mixin For Tornado Framework.
+# https://github.com/mehmetkose/torethink
+
+# Licensed under the MIT license:
+# http://www.opensource.org/licenses/mit-license
+# Copyright (c) 2016 Mehmet Kose mehmet@linux.com
+
 import time
 import tornado.ioloop
 import tornado.gen
@@ -20,7 +27,7 @@ database = {
 }
 
 async def test():
-    db = await Torethink.init(database=database)
+    db = await Torethink.init(database=database, create_scheme=True)
     list = await db.all("user")
     print(list)
 
