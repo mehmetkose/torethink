@@ -36,7 +36,7 @@ class DemoHandler(BaseHandler):
 
     async def get(self):
         for user in (await self.db.list("user")):
-            self.write(user.user_name)
+            self.write(user['user_name'])
 
     ...
 ```

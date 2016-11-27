@@ -29,8 +29,7 @@ class Torethink(object):
         items = []
         while (await cursor.fetch_next()):
             item = await cursor.next()
-            object_item = Record(item)
-            items.append(object_item)
+            items.append(item)
         return items
 
     async def insert(self, table, insert_dict):
