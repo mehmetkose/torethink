@@ -94,6 +94,12 @@ class Torethink(object):
             return (await self.update(table, item_id, data))
         return False
 
+    async def list_contains_with_key(self, table, key, value, limit=200):
+        cursor = await r.table(table).filter(
+            lambda record: record[key].contains(value)
+        ).limit(limit).run(self.db)
+        return (await self.iterate_cursor(cursor))
+
     async def flush(self, table):
         return(await r.table(table).delete().run(self.db))
 
