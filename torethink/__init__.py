@@ -3,3 +3,4 @@ __email__ = "mehmet@linux.com"
 __version__ = "1.0.0"
 
 from .torethink import Torethink
+from .database import Database, Table, Row
