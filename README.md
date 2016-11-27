@@ -19,20 +19,24 @@ import tornado.escape
 from torethink import Torethink
 ...
 
+# Build Table
+UserTable = Table(name='user')
+UserTable.rows.append(Row('user_name'))
+UserTable.rows.append(Row('user_mail', specs=['index']))
+# Buld Database
+ProjectDatabase = Database(db='test', host='127.0.0.1', port=28015)
+ProjectDatabase.tables.append(UserTable)
+
 class BaseHandler(tornado.web.RequestHandler):
 
     async def prepare(self):
-        self.db = await Torethink.init(host="127.0.0.1", db="authentication", port=28015)
-
-    def write_json(self, obj):
-        self.set_header("Content-Type", "application/json; charset=UTF-8")
-        self.finish(tornado.escape.json_encode(obj))
+        self.db = await Torethink.init(database=ProjectDatabase, create_structure=True)
 
 class DemoHandler(BaseHandler):
 
     async def get(self):
-        list = await self.db.list("user")
-        self.write_json({'users': list})
+        for user in (await self.db.list("user")):
+            self.write(user.user_name)
 
     ...
 ```

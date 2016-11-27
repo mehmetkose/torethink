@@ -12,15 +12,16 @@ import rethinkdb as r
 r.set_loop_type("tornado")
 
 from torethink import initiator
+from .database import Record
 
 
 class Torethink(object):
 
     @classmethod
-    async def init(cls, database, create_scheme=True):
+    async def init(cls, database, create_structure=True):
         self = Torethink()
-        self.db = await r.connect(host=database['host'], db=database['db'], port=database['port'])
-        if create_scheme:
+        self.db = await r.connect(host=database.host, db=database.db, port=database.port)
+        if create_structure:
             await initiator.create_tables(database=database, connection=self.db)
         return self
 
@@ -28,7 +29,8 @@ class Torethink(object):
         items = []
         while (await cursor.fetch_next()):
             item = await cursor.next()
-            items.append(item)
+            object_item = Record(item)
+            items.append(object_item)
         return items
 
     async def insert(self, table, insert_dict):
