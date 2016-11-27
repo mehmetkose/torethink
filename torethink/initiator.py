@@ -31,11 +31,10 @@ async def create_tables(database, connection):
         except:
             pass
 
-
     for table in database.tables:
         for row in table.rows:
             if 'index' in row.specs:
-                    try:
-                        await r.db(database.db).table(table.name).index_create(row.name).run(connection)
-                    except:
-                        pass
+                try:
+                    await r.db(database.db).table(table.name).index_create(row.name).run(connection)
+                except:
+                    pass
