@@ -16,7 +16,7 @@ import tornado.web
 import tornado.escape
 ...
 
-from torethink import Torethink
+from torethink import Torethink, Database, Table, Row
 ...
 
 # Build Table
