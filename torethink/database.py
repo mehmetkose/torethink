@@ -22,6 +22,12 @@ class Database(object):
         return "Database Name: %s, Host: %s, Port: %s, \
                 Tables: %s" % (self.db, self.host, self.port, self.tables)
 
+    def get_table(self, table_name):
+        for table in self.tables:
+            if table.name == table_name:
+                return table
+        return False
+
 
 class Row(object):
 
@@ -47,6 +53,12 @@ class Table(object):
 
     def __str__(self):
         return "Table Name: %s, Rows: %s" % (self.name, self.rows)
+
+    def get_row(self, row_name):
+        for row in self.rows:
+            if row.name == row_name:
+                return row
+        return False
 
 
 class Record(object):
