@@ -32,8 +32,17 @@ class Torethink(object):
             items.append(item)
         return items
 
-    async def insert(self, table, insert_dict):
-        return (await r.table(table).insert(insert_dict).run(self.db))
+    def prepare_data(self, data):
+        if not isinstance(data, dict):
+            table = {}
+            for row in data.rows:
+                table[row.name] = row.value
+            return table
+        return data
+
+    async def insert(self, table_name, insert_data):
+        insert_data = self.prepare_data(insert_data)
+        return (await r.table(table_name).insert(insert_data).run(self.db))
 
     async def remove(self, table, record_id):
         return (await r.table(table).get(id=record_id).delete().run(self.db))
@@ -66,11 +75,11 @@ class Torethink(object):
         cursor = await r.table(table).run(self.db)
         return (await self.iterate_cursor(cursor))
 
-    async def insert_unique(self, table, check_dict, insert_dict):
+    async def insert_unique(self, table, check_dict, insert_data):
         cursor = await r.table(table).filter(check_dict).run(self.db)
         items = await self.iterate_cursor(cursor)
         if len(items) == 0:
-            results = await r.table(table).insert(insert_dict).run(self.db)
+            results = await r.table(table).insert(insert_data).run(self.db)
             return results
         return False
 
