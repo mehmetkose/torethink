@@ -31,13 +31,17 @@ class Database(object):
 
 class Row(object):
 
-    def __init__(self, name=None, default=None, specs=[]):
+    def __init__(self, name=None, value=None, default=None, specs=[]):
         self.name = name
         self.default = default
         self.specs = specs
+        self.value = value
+        if not self.value:
+            self.value = self.default
 
     def __str__(self):
-        return "Row Name: %s, Default: %s, Specs: %s" % (self.name, self.default, self.specs)
+        return "Row Name: %s, Value: %s, Default: %s, \
+                Specs: %s" % (self.name, self.value, self.default, self.specs)
 
 
 class Table(object):
@@ -69,4 +73,5 @@ class Record(object):
                 setattr(self, key, [Record(key) if isinstance(
                     key, dict) else key for key in value])
             else:
-                setattr(self, key, Record(value) if isinstance(value, dict) else value)
+                setattr(self, key, Record(value)
+                        if isinstance(value, dict) else value)
