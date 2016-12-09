@@ -12,16 +12,15 @@ import rethinkdb as r
 r.set_loop_type("tornado")
 
 from torethink import initiator
-from .database import Record
 
 
 class Torethink(object):
 
     @classmethod
-    async def init(cls, database, create_structure=True):
+    async def init(cls, database, create_scheme=True):
         self = Torethink()
-        self.db = await r.connect(host=database.host, db=database.db, port=database.port)
-        if create_structure:
+        self.db = await r.connect(host=database['host'], db=database['db'], port=database['port'])
+        if create_scheme:
             await initiator.create_tables(database=database, connection=self.db)
         return self
 
@@ -31,6 +30,9 @@ class Torethink(object):
             item = await cursor.next()
             items.append(item)
         return items
+
+    async def get(self, table, record_id):
+        return (await r.table(table).get(record_id).run(self.db))
 
     async def insert(self, table, insert_dict):
         return (await r.table(table).insert(insert_dict).run(self.db))
@@ -55,11 +57,9 @@ class Torethink(object):
             direction = r.asc(index)
 
         if key == 'get' and value == 'all':
-            cursor = await r.table(table).order_by(index=direction).run(self.db)
+            items = await self.all(table)
         else:
-            cursor = await r.table(table).order_by(index=direction).filter(r.row[key] == value).run(self.db)
-
-        items = await self.iterate_cursor(cursor)
+            items = await self.filter(table, {key: value})
         return items
 
     async def all(self, table):
@@ -75,7 +75,8 @@ class Torethink(object):
         return False
 
     async def remove_all_with_key(self, table, key, value):
-        return (await r.table(table).filter({key: value}).delete().run(self.db))
+        result = await r.table(table).filter({key: value}).delete().run(self.db)
+        return (result)
 
     async def remove_one_with_key(self, table, key, value):
         items = await self.list(table, key, value)
@@ -90,8 +91,8 @@ class Torethink(object):
 
     async def update_one_with_key(self, table, key, value, data):
         items = await self.list(table, key, value)
-        if len(get_list) > 0:
-            item_id = items[0]
+        if len(items) > 0:
+            item_id = items[0]['id']
             return (await self.update(table, item_id, data))
         return False
 

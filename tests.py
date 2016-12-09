@@ -10,19 +10,26 @@ import time
 import tornado.ioloop
 import tornado.gen
 
-from torethink import Torethink, Database, Table, Row
+from torethink import Torethink
 
-UserTable = Table(name='user')
-UserTable.rows.append(Row('user_name'))
-UserTable.rows.append(Row('user_mail', specs=['index']))
-
-ProjectDatabase = Database(db='test', host='127.0.0.1', port=28015)
-ProjectDatabase.tables.append(UserTable)
+database = {
+    'db': 'test',
+    'host': '127.0.0.1',
+    'port': 28015,
+    'tables': {
+        'user': {
+            'user_name': {'default': None, 'specs': []},
+            'user_mail': {'default': None, 'specs': []},
+            'add_date': {'default': int(time.time()), 'specs': ['noedit', 'index']},
+            'update_date': {'default': int(time.time()), 'specs': ['noedit', 'index']},
+        }
+    }
+}
 
 async def test():
-    db = await Torethink.init(database=ProjectDatabase, create_structure=True)
-    for user in (await db.all("user")):
-        print(user)
+    db = await Torethink.init(database=database, create_scheme=True)
+    list = await db.all("user")
+    print(list)
 
 async def main():
     tornado.ioloop.IOLoop.current().spawn_callback(test)
@@ -31,4 +38,3 @@ async def main():
 if __name__ == "__main__":
     tornado.ioloop.IOLoop.current().run_sync(main)
     tornado.ioloop.IOLoop.current().start()
-
