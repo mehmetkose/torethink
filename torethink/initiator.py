@@ -32,3 +32,12 @@ async def create_tables(database, connection):
                         await r.db(database['db']).table(table_name).index_create(table_key).run(connection)
                     except:
                         pass
+                elif 'multiple_index' in specs:
+                    try:
+                        await r.db(database['db']).table(table_name).index_create(table_key, multi=True).run(connection)
+                    except:
+                        pass
+
+
+
+
