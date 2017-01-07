@@ -43,11 +43,11 @@ class Torethink(object):
     async def update(self, table, id, data):
         return (await r.table(table).get(id).update(data).run(self.db))
 
-    async def filter(self, table, criterion):
-        cursor = await r.table(table).filter(criterion).run(self.db)
+    async def filter(self, table, criterion, limit=False):
+        cursor = await r.table(table).filter(criterion).limit(limit).run(self.db)
         return (await self.iterate_cursor(cursor))
 
-    async def list(self, table, key='get', value='all', index='update_date', order='desc', create_index=False):
+    async def list(self, table, key='get', value='all', index='update_date', order='desc', create_index=False, limit=False):
         if create_index:
             await self.index(table, index)
 
@@ -59,7 +59,7 @@ class Torethink(object):
         if key == 'get' and value == 'all':
             items = await self.all(table)
         else:
-            items = await self.filter(table, {key: value})
+            items = await self.filter(table, {key: value}, limit=limit)
         return items
 
     async def all(self, table):
@@ -90,8 +90,15 @@ class Torethink(object):
         return (await r.table(table).filter({key: value}).update(data).run(self.db))
 
     async def update_one_with_key(self, table, key, value, data):
-        items = await self.list(table, key, value)
-        if len(items) > 0:
+        if key == "id":
+            items = []
+            item = await self.get(table=table, record_id=value)
+            if item:
+                items.append(item)
+        else:
+            items = await self.list(table, key, value)
+        
+        if items and len(items) > 0:
             item_id = items[0]['id']
             return (await self.update(table, item_id, data))
         return False
