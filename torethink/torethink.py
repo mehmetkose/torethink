@@ -9,15 +9,16 @@
 
 import asyncio
 import rethinkdb as r
-r.set_loop_type("tornado")
 
 from torethink import initiator
-
 
 class Torethink(object):
 
     @classmethod
-    async def init(cls, database, create_scheme=True):
+    async def init(cls, database, create_scheme=True, loop_type="tornado"):
+        if loop_type in ['tornado', 'asyncio', 'gevent', 'twisted']:
+            r.set_loop_type(loop_type)
+
         self = Torethink()
         self.db = await r.connect(host=database['host'], db=database['db'], port=database['port'])
         if create_scheme:
@@ -97,7 +98,7 @@ class Torethink(object):
                 items.append(item)
         else:
             items = await self.list(table, key, value)
-        
+
         if items and len(items) > 0:
             item_id = items[0]['id']
             return (await self.update(table, item_id, data))
