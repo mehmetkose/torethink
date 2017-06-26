@@ -1,6 +1,6 @@
 # torethink
 
-Rethinkdb Mixin For Tornado Framework 
+Rethinkdb Mixin For Tornado Framework
 
 **only Python 3.5 projects**
 
@@ -14,10 +14,8 @@ Rethinkdb Mixin For Tornado Framework
 ```python
 import tornado.web
 import tornado.escape
-...
 
 from torethink import Torethink
-...
 
 class BaseHandler(tornado.web.RequestHandler):
 
@@ -34,5 +32,4 @@ class DemoHandler(BaseHandler):
         list = await self.db.list("user")
         self.write_json({'users': list})
 
-    ...
 ```
