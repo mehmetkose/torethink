@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="torethink",
-    version="1.3.2",
+    version="1.3.3",
     packages=["torethink"],
     url="https://github.com/mehmetkose/torethink",
     license="MIT",
