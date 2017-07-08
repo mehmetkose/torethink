@@ -28,8 +28,9 @@ database = {
 
 async def test():
     db = await Torethink.init(database=database, create_scheme=True)
-    list = await db.all("user")
-    print(list)
+    users = await db.all("user")
+    print(users)
+    return users
 
 async def main():
     tornado.ioloop.IOLoop.current().spawn_callback(test)
