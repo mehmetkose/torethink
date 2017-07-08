@@ -4,7 +4,7 @@
 
 # Licensed under the MIT license:
 # http://www.opensource.org/licenses/mit-license
-# Copyright (c) 2016 Mehmet Kose mehmet@linux.com
+# Copyright (c) 2016 Mehmet Kose mehmet.py@gmail.com
 
 
 import asyncio
@@ -45,7 +45,10 @@ class Torethink(object):
         return (await r.table(table).get(id).update(data).run(self.db))
 
     async def filter(self, table, criterion, limit=False):
-        cursor = await r.table(table).filter(criterion).limit(limit).run(self.db)
+        if not limit == False:
+            cursor = await r.table(table).filter(criterion).limit(limit).run(self.db)
+        else:
+            cursor = await r.table(table).filter(criterion).run(self.db)
         return (await self.iterate_cursor(cursor))
 
     async def list(self, table, key='get', value='all', index='update_date', order='desc', create_index=False, limit=False):
@@ -63,7 +66,8 @@ class Torethink(object):
             items = await self.filter(table, {key: value}, limit=limit)
         return items
 
-    async def all(self, table):
+    async def all(self, table, limit=False, random=False):
+        #todo : limit and random must be works
         cursor = await r.table(table).run(self.db)
         return (await self.iterate_cursor(cursor))
 
@@ -104,6 +108,7 @@ class Torethink(object):
             return (await self.update(table, item_id, data))
         return False
 
+    # limit must be smart
     async def list_contains_with_key(self, table, key, value, limit=200):
         cursor = await r.table(table).filter(
             lambda record: record[key].contains(value)

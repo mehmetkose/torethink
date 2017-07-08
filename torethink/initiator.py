@@ -4,7 +4,7 @@
 
 # Licensed under the MIT license:
 # http://www.opensource.org/licenses/mit-license
-# Copyright (c) 2016 Mehmet Kose mehmet@linux.com
+# Copyright (c) 2016 Mehmet Kose mehmet.py@gmail.com
 
 import rethinkdb as r
 
@@ -37,7 +37,3 @@ async def create_tables(database, connection):
                         await r.db(database['db']).table(table_name).index_create(table_key, multi=True).run(connection)
                     except:
                         pass
-
-
-
-
