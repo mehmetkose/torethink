@@ -12,25 +12,34 @@ import tornado.gen
 
 from torethink import Torethink
 
-database = {
-    'db': 'test',
+scheme = {
+    'db': 'awesome_project',
     'host': '127.0.0.1',
     'port': 28015,
     'tables': {
         'user': {
-            'user_name': {'default': None, 'specs': []},
-            'user_mail': {'default': None, 'specs': []},
-            'add_date': {'default': int(time.time()), 'specs': ['noedit', 'index']},
+            'email': {'default': None, 'specs': []},
+            'add_date': {'default': int(time.time()), 'specs': ['noedit']},
             'update_date': {'default': int(time.time()), 'specs': ['noedit', 'index']},
-        }
+            'is_deleted': {'default': False, 'specs': ['index']},
+        },
     }
 }
 
 async def test():
-    db = await Torethink.init(database=database, create_scheme=True)
-    users = await db.all("user")
-    print(users)
-    return users
+    db = await Torethink.init(database=scheme, create_scheme=True)
+
+    for i in range(20):
+        email = "%s@%s.com" % (int(time.time()), int(time.time()))
+        email_record = scheme['tables'].get('user', {})
+        email_record['email'] = email
+
+        check = {'email': email}
+        result = await db.insert_unique('user', check, email_record)
+        print(result)
+
+    for user in (await db.list("user")):
+        print("user email: %s, user id: %s" % (user['email'], user['id']))
 
 async def main():
     tornado.ioloop.IOLoop.current().spawn_callback(test)
