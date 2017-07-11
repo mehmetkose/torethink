@@ -72,11 +72,9 @@ class Torethink(object):
         return (await self.iterate_cursor(cursor))
 
     async def insert_unique(self, table, check_dict, insert_dict):
-        cursor = await r.table(table).filter(check_dict).run(self.db)
-        items = await self.iterate_cursor(cursor)
-        if len(items) == 0:
-            results = await r.table(table).insert(insert_dict).run(self.db)
-            return results
+        count = await r.table(table).count(check_dict).run(self.db)
+        if count == 0:
+            return (await r.table(table).insert(insert_dict).run(self.db))
         return False
 
     async def remove_all_with_key(self, table, key, value):
